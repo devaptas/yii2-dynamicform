@@ -65,7 +65,7 @@
             }
         });
 
-        $template.find('input, textarea, select').each(function() {
+        $template.find('input, textarea, select, button').each(function() {
             if ($(this).is(':checkbox') || $(this).is(':radio')) {
                 var type         = ($(this).is(':checkbox')) ? 'checkbox' : 'radio';
                 var inputName    = $(this).attr('name');
@@ -80,15 +80,31 @@
                 $(this).prop('checked', false);
             } else if($(this).is('select')) {
                 $(this).find('option:selected').removeAttr("selected");
+			} else if($(this).is('button')) {
+                if($(this).hasClass('hided')) {
+                    $(this).removeClass('hided');
+                    $(this).next('a').addClass('hided');
+                }
             } else {
-                $(this).val(''); 
+                 if(! $(this).hasClass('notSet2Empty')) {
+              		$(this).val(''); 
+           		}
             }
+            $(this).attr('disabled', false);
         });
 
-        // remove "error/success" css class
+         // remove "error/success" css class
         var yiiActiveFormData = $('#' + widgetOptions.formId).yiiActiveForm('data');
-        $template.find('.' + yiiActiveFormData.settings.errorCssClass).removeClass(yiiActiveFormData.settings.errorCssClass);
-        $template.find('.' + yiiActiveFormData.settings.successCssClass).removeClass(yiiActiveFormData.settings.successCssClass);
+        if (typeof yiiActiveFormData !== "undefined" && typeof yiiActiveFormData.settings !== "undefined" ) {
+            if(typeof yiiActiveFormData.settings.errorCssClass !== "undefined" && yiiActiveFormData.settings.errorCssClass.length > 0) {
+                $template.find('.' + yiiActiveFormData.settings.errorCssClass).removeClass(yiiActiveFormData.settings.errorCssClass);
+            }
+
+            if(typeof yiiActiveFormData.settings.successCssClass !== "undefined" && yiiActiveFormData.settings.successCssClass.length > 0) {
+                $template.find('.' + yiiActiveFormData.settings.successCssClass).removeClass(yiiActiveFormData.settings.successCssClass);
+            }
+        }
+
 
         return $template;
     };
@@ -133,7 +149,7 @@
             $elem.closest('.' + widgetOptions.widgetContainer).triggerHandler(events.limitReached, widgetOptions.limit);
         }
     };
-
+    
     var _removeValidations = function($elem, widgetOptions, count) {
         if (count > 1) {
             $elem.find('div[data-dynamicform]').each(function() {
@@ -423,20 +439,8 @@
                 });
             });
         }
-
-        // "kartik-v/yii2-widget-depdrop"
-        var $hasDepdrop = $(widgetOptionsRoot.widgetItem).find('[data-krajee-depdrop]');
-        if ($hasDepdrop.length > 0) {
-            $hasDepdrop.each(function() {
-                if ($(this).data('select2') === undefined) {
-                    $(this).removeData().off();
-                    $(this).unbind();
-                    _restoreKrajeeDepdrop($(this));
-                }
-            });
-        }
-
-        // "kartik-v/yii2-widget-select2"
+        
+       // "kartik-v/yii2-widget-select2"
         var $hasSelect2 = $(widgetOptionsRoot.widgetItem).find('[data-krajee-select2]');
         if ($hasSelect2.length > 0) {
             $hasSelect2.each(function() {
@@ -454,13 +458,14 @@
                     $(this).unbind();
                     _restoreKrajeeDepdrop($(this));
                 }
-
-                $.when($('#' + id).select2(configSelect2)).done(initSelect2Loading(id, '.select2-container--krajee'));
+                var s2LoadingFunc = typeof initSelect2Loading != 'undefined' ? initSelect2Loading : initS2Loading;
+                var s2OpenFunc = typeof initSelect2DropStyle != 'undefined' ? initSelect2Loading : initS2Loading;
+                $.when($('#' + id).select2(configSelect2)).done(s2LoadingFunc(id, '.select2-container--krajee'));
 
                 var kvClose = 'kv_close_' + id.replace(/\-/g, '_');
 
                 $('#' + id).on('select2:opening', function(ev) {
-                    initSelect2DropStyle(id, kvClose, ev);
+                    s2OpenFunc(id, kvClose, ev);
                 });
 
                 $('#' + id).on('select2:unselect', function() {
@@ -470,6 +475,35 @@
                if (configDepdrop) {
                     var loadingText = (configDepdrop.loadingText) ? configDepdrop.loadingText : 'Loading ...';
                     initDepdropS2(id, loadingText);
+                }
+            });
+        }
+
+        // "kartik-v/yii2-widget-depdrop"
+        var $hasDepdrop = $(widgetOptionsRoot.widgetItem).find('[data-krajee-depdrop]');
+        if ($hasDepdrop.length > 0) {
+            $hasDepdrop.each(function() {
+                if ($(this).data('select2') === undefined) {
+                    $(this).removeData().off();
+                    $(this).unbind();
+                    _restoreKrajeeDepdrop($(this));
+                }
+            });
+        }
+
+        // "kartik-v/yii2-widget-datecontrol"
+        var $hasDateControl = $(widgetOptionsRoot.widgetItem).find('[data-krajee-datecontrol]');
+        if ($hasDateControl.length > 0) {
+            $hasDateControl.each(function() {
+                var id = $(this).attr('id');
+                var dcElementOptions = eval($(this).attr('data-krajee-datecontrol'));
+                if (id.indexOf(dcElementOptions.idSave) < 0) {
+                    var cdNewOptions = $.extend(true, {}, dcElementOptions);
+                    cdNewOptions.idSave = $(this).parent().next().attr('id');
+                    $(this).parent().kvDatepicker(eval($(this).attr('data-krajee-kvdatepicker')));
+                    $(this).removeAttr('value name data-krajee-datecontrol');
+                    $(this).datecontrol(cdNewOptions);
+
                 }
             });
         }
