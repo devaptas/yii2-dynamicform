@@ -449,6 +449,8 @@
                 var id = $(this).attr('id');
                 var configSelect2 = eval($(this).attr('data-krajee-select2'));
 
+                var text = $(this).next().find('.select2-selection__rendered').html();
+
                 if ($(this).data('select2')) {
                     $(this).select2('destroy');
                 }
@@ -478,6 +480,9 @@
                     var loadingText = (configDepdrop.loadingText) ? configDepdrop.loadingText : 'Loading ...';
                     initDepdropS2(id, loadingText);
                 }
+
+                $('#' + id).next().find('.select2-selection__rendered').html(text);
+
             });
         }
 
