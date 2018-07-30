@@ -403,6 +403,22 @@
             });
         }
 
+        // "kartik-v/yii2-numberControl"
+        var $hasNumberControl = $(widgetOptionsRoot.widgetItem).find('[data-krajee-numbercontrol]');
+        if ($hasNumberControl.length > 0) {
+            $hasNumberControl.each(function() {
+                var id = '#' + $(this).attr('id');
+                var displayID  = id + '-disp';
+                var config = eval($(this).attr('data-krajee-numbercontrol'));
+                config.displayId = $(this).attr('id')+'-disp';
+                $(displayID).attr('name', $(displayID).attr('id'));
+                if ($(id).data('numberControl')) {
+                    $(id).numberControl('destroy');
+                }
+                $(id).numberControl(config);
+            });
+        }
+
         // "kartik-v/yii2-widget-fileinput"
         var $hasFileinput = $(widgetOptionsRoot.widgetItem).find('[data-krajee-fileinput]');
         if ($hasFileinput.length > 0) {
