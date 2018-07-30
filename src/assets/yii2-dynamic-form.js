@@ -403,6 +403,22 @@
             });
         }
 
+        // "kartik-v/yii2-numberControl"
+        var $hasNumberControl = $(widgetOptionsRoot.widgetItem).find('[data-krajee-numbercontrol]');
+        if ($hasNumberControl.length > 0) {
+            $hasNumberControl.each(function() {
+                var id = '#' + $(this).attr('id');
+                var displayID  = id + '-disp';
+                var config = eval($(this).attr('data-krajee-numbercontrol'));
+                config.displayId = $(this).attr('id')+'-disp';
+                $(displayID).attr('name', $(displayID).attr('id'));
+                if ($(id).data('numberControl')) {
+                    $(id).numberControl('destroy');
+                }
+                $(id).numberControl(config);
+            });
+        }
+
         // "kartik-v/yii2-widget-fileinput"
         var $hasFileinput = $(widgetOptionsRoot.widgetItem).find('[data-krajee-fileinput]');
         if ($hasFileinput.length > 0) {
@@ -449,6 +465,8 @@
                 var id = $(this).attr('id');
                 var configSelect2 = eval($(this).attr('data-krajee-select2'));
 
+                var text = $(this).next().find('.select2-selection__rendered').html();
+
                 if ($(this).data('select2')) {
                     $(this).select2('destroy');
                 }
@@ -478,6 +496,9 @@
                     var loadingText = (configDepdrop.loadingText) ? configDepdrop.loadingText : 'Loading ...';
                     initDepdropS2(id, loadingText);
                 }
+
+                $('#' + id).next().find('.select2-selection__rendered').html(text);
+
             });
         }
 
