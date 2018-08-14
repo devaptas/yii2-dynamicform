@@ -80,15 +80,15 @@
                 $(this).prop('checked', false);
             } else if($(this).is('select')) {
                 $(this).find('option:selected').removeAttr("selected");
-			} else if($(this).is('button')) {
+            } else if($(this).is('button')) {
                 if($(this).hasClass('hided')) {
                     $(this).removeClass('hided');
                     $(this).next('a').addClass('hided');
                 }
             } else {
                  if(! $(this).hasClass('notSet2Empty')) {
-              		$(this).val(''); 
-           		}
+                    $(this).val(''); 
+                }
             }
             $(this).attr('disabled', false);
         });
@@ -365,12 +365,31 @@
             });
         }
 
-        // "kartik-v/yii2-widget-datepicker"
-        var $hasDatepicker = $(widgetOptionsRoot.widgetItem).find('[data-krajee-datepicker]');
+        // "kartik-v/yii2-widget-kvdatepicker"
+        var $hasDatepicker = $(widgetOptionsRoot.widgetItem).find('[data-krajee-kvdatepicker]');
         if ($hasDatepicker.length > 0) {
             $hasDatepicker.each(function() {
-                $(this).parent().removeData().datepicker('remove');
-                $(this).parent().datepicker(eval($(this).attr('data-krajee-datepicker')));
+                var id = '#' + $(this).attr('id');
+                var config = eval($(this).attr('data-krajee-kvdatepicker'));
+                if ($(id).data('kvDatepicker')) {
+                    $(id).kvDatepicker('destroy');
+                }
+                $(id).removeData();
+                $(id).kvDatepicker(config);
+            });
+        }
+
+        // "kartik-v/yii2-widget-datetimepicker"
+        var $hasDateTimepicker = $(widgetOptionsRoot.widgetItem).find('[data-krajee-datetimepicker]');
+        if ($hasDateTimepicker.length > 0) {
+            $hasDateTimepicker.each(function() {
+                var id = '#' + $(this).attr('id');
+                var config = eval($(this).attr('data-krajee-datetimepicker'));
+                if ($(id).data('datetimepicker')) {
+                    $(id).datetimepicker('destroy');
+                }
+                $(id).removeData().datetimepicker('remove');
+                $(id).datetimepicker(config);
             });
         }
 
