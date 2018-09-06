@@ -532,6 +532,17 @@
                 }
             });
         }
+        
+        //BootStrap Switch
+        var $hasBootStrap = $(widgetOptionsRoot.widgetItem).find('[data-krajee-bootstrapswitch]');
+        if ($hasBootStrap.length > 0) {
+            $hasBootStrap.each(function() {
+                if ($(this).data('bootstrapSwitch')) {
+                    $(this).bootstrapSwitch('destroy'); 
+                }
+                $(this).bootstrapSwitch(eval($(this).attr('data-krajee-bootstrapswitch')));
+            });
+        }
 
         // "kartik-v/yii2-widget-datecontrol"
         var $hasDateControl = $(widgetOptionsRoot.widgetItem).find('[data-krajee-datecontrol]');
