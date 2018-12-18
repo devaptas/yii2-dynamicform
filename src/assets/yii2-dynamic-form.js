@@ -1,4 +1,4 @@
-/**
+﻿/**
  * yii2-dynamic-form
  *
  * A jQuery plugin to clone form elements in a nested manner, maintaining accessibility.
@@ -511,12 +511,13 @@
                     window[kvClose] = true;
                 });
 
-               if (configDepdrop) {
+                if (configDepdrop) {
                     var loadingText = (configDepdrop.loadingText) ? configDepdrop.loadingText : 'Loading ...';
                     initDepdropS2(id, loadingText);
                 }
 
                 $('#' + id).next().find('.select2-selection__rendered').html(text);
+                $('#' + id).prev('.kv-plugin-loading').remove();
 
             });
         }
